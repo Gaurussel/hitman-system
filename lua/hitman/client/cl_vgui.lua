@@ -1,5 +1,30 @@
 local PNL = FindMetaTable("Panel")
 
+local function GetTextHeight(font, text)
+    surface.SetFont(font)
+    local w, h = surface.GetTextSize(text)
+    return h
+end
+
+local function GetTextWide(font, text)
+    surface.SetFont(font)
+    local w, h = surface.GetTextSize(text)
+    return w
+end
+
+local function Ease(t, b, c, d)
+	t = t / d
+	local ts = t * t
+	local tc = ts * t
+
+
+	return b + c * (-2 * tc + 3 * ts)
+end
+
+local function LerpColor(fract, from, to)
+	return Color(Lerp(fract, from.r, to.r), Lerp(fract, from.g, to.g), Lerp(fract, from.b, to.b), Lerp(fract, from.a or 255, to.a or 255))
+end
+
 function PNL:LerpColor(var, to, duration, callback)
     if not duration then
         duration = 0.5
@@ -10,13 +35,13 @@ function PNL:LerpColor(var, to, duration, callback)
     anim.Color = to
 
     anim.Think = function(anim, pnl, fract)
-        local newFract = GSVgui:Ease(fract, 0, 1, 1)
+        local newFract = Ease(fract, 0, 1, 1)
 
         if not anim.StartColor then
             anim.StartColor = color
         end
 
-        local newColor = GSVgui:LerpColor(newFract, anim.StartColor, anim.Color)
+        local newColor = LerpColor(newFract, anim.StartColor, anim.Color)
         self[var] = newColor
     end
 
