@@ -10,7 +10,7 @@ function AddOrder(victim, client, price)
         return
     end
 
-    if HITMAN.activeOrders[victim:AccountID()] then
+    if HITMAN.activeOrders[victim] then
         DarkRP.notify(client, 1, 4, "На этого человека уже сделан заказ!")
 
         return
@@ -28,7 +28,7 @@ function AddOrder(victim, client, price)
         return
     end
 
-    HITMAN.activeOrders[victim:AccountID()] = {
+    HITMAN.activeOrders[victim] = {
         customer = client:AccountID(),
         price = price,
         name = victim:Name()
@@ -47,8 +47,8 @@ function AddOrder(victim, client, price)
 end
 
 function RemoveOrder(victim)
-    if not HITMAN.activeOrders[victim:AccountID()] then return end
-    HITMAN.activeOrders[victim:AccountID()] = nil
+    if not HITMAN.activeOrders[victim] then return end
+    HITMAN.activeOrders[victim] = nil
 
     for id, ply in pairs(player.GetAll()) do
         if not HITMAN.config.hitmanJobs[ply:Team()] then continue end
@@ -59,7 +59,7 @@ function RemoveOrder(victim)
 end
 
 function GetOrder(victim)
-    return HITMAN.activeOrders[victim:AccountID()]
+    return HITMAN.activeOrders[victim]
 end
 
 hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
@@ -68,7 +68,7 @@ hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
     if not order then return end
 
     if not attacker:IsPlayer() then
-        local customer = player.GetByAccountID(HITMAN.activeOrders[victimID].customer)
+        local customer = player.GetByAccountID(HITMAN.activeOrders[victim].customer)
 
         if IsValid(customer) then
             DarkRP.notify(customer, 2, 4, "Наёмник выполнил ваш заказ на убийство!")
@@ -94,7 +94,7 @@ hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
 
     DarkRP.notify(victim, 2, 4, "Вы были убиты по заказу наёмным убийцей!")
     DarkRP.notify(attacker, 2, 4, "Вы выполнили заказ и получили " .. DarkRP.formatMoney(order.price))
-    local customer = player.GetByAccountID(HITMAN.activeOrders[victimID].customer)
+    local customer = player.GetByAccountID(HITMAN.activeOrders[victim].customer)
 
     if IsValid(customer) then
         DarkRP.notify(customer, 2, 4, "Наёмник выполнил ваш заказ на убийство!")
