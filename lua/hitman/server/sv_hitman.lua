@@ -87,7 +87,11 @@ hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
     end
 
     attacker:addMoney(order.price)
-    victim:changeTeam(HITMAN.config.teamOnDeath, true)
+
+    if HITMAN.config.needChangeTeam then
+        victim:changeTeam(HITMAN.config.teamOnDeath, true)
+    end
+
     DarkRP.notify(victim, 2, 4, "Вы были убиты по заказу наёмным убийцей!")
     DarkRP.notify(attacker, 2, 4, "Вы выполнили заказ и получили " .. DarkRP.formatMoney(order.price))
     local customer = player.GetByAccountID(HITMAN.activeOrders[victimID].customer)
