@@ -143,10 +143,10 @@ function HITMAN.GetTeamPlayers()
     return count
 end
 
-concommand.Add("getordersh", function()
-    PrintTable(HITMAN.activeOrders)
-end)
+-- concommand.Add("getordersh", function()
+--     PrintTable(HITMAN.activeOrders)
+-- end)
 
-concommand.Add("resetorders", function()
-    HITMAN.activeOrders = {}
-end)
+-- concommand.Add("resetorders", function()
+--     HITMAN.activeOrders = {}
+-- end)
