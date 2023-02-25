@@ -397,16 +397,6 @@ local function OpenMenu()
             button:SetBackgroundColor(HITMAN.config.colors.btnColor)
 
             button.DoClick = function()
-                if HITMAN.config.canHitmanOrder and HITMAN.config.hitmanJobs[localplayer:Team()] then
-                    localplayer:Notify("Киллеры не могут сами делать заказы", 1)
-                    return
-                end
-
-                if HITMAN.GetTeamPlayers() < 1 then
-                    localplayer:Notify("На данный момент нет киллеров онлайн", 1)
-                    return
-                end
-
                 net.Start("hitman.AddOrder")
                     net.WriteEntity(v)
                     net.WriteUInt(TextEntry:GetValue(), 24)

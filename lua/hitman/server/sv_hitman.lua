@@ -132,12 +132,12 @@ end)
 
 net.Receive("hitman.AddOrder", function(_, ply)
     if HITMAN.config.canHitmanOrder and HITMAN.config.hitmanJobs[ply:Team()] then
-        ply:Notify("Киллеры не могут сами делать заказы", 1)
+        DarkRP.notify(ply, 1, 4, "Киллеры не могут сами делать заказы")
         return
     end
 
     if HITMAN.GetTeamPlayers() < 1 then
-        ply:Notify("На данный момент нет киллеров онлайн!", 1)
+        DarkRP.notify(ply, 1, 4, "На данный момент нет киллеров онлайн!")
         return
     end
 
