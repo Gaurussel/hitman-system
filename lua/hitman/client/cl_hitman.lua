@@ -80,9 +80,12 @@ hook.Add("HUDPaint", "hitman.HUDPaint", function()
     local x, y = scrw * 1 - wide, scrh * 0.03
 
     surface.SetFont("HitmanOrder")
+
     local _, tY = surface.GetTextSize("Активные заказы")
+
     surface.SetDrawColor(HITMAN.config.colors.title)
     surface.DrawRect(x, 0, wide, scrh * 0.03)
+
     surface.SetTextColor(HITMAN.config.colors.text)
     surface.SetTextPos(x + 5, (y - tY) / 2)
 
@@ -112,6 +115,13 @@ net.Receive("hitman.AddOrder", function()
     local price = net.ReadUInt(24)
 
     if victim then
+        local name = victim:Name()
+        for id, data in ipairs(HITMAN.activeOrders) do
+            if data.name == name then
+                return
+            end
+        end
+
         table.insert(HITMAN.activeOrders, {
             price = price,
             name = victim:Name()
@@ -121,15 +131,18 @@ end)
 
 net.Receive("hitman.RemoveOrder", function()
     local victim = net.ReadEntity()
-    local name = victim:Name()
 
-    for k, v in ipairs(HITMAN.activeOrders) do
-        if v.name != name then
-            continue
+    if IsValid(victim) then
+        local name = victim.Name and victim:Name() or "None"
+
+        for k, v in ipairs(HITMAN.activeOrders) do
+            if v.name != name then
+                continue
+            end
+
+            HITMAN.activeOrders[k] = nil
+            break
         end
-
-        HITMAN.activeOrders[k] = nil
-        break
     end
 end)
 
@@ -147,6 +160,6 @@ end
 --     PrintTable(HITMAN.activeOrders)
 -- end)
 
--- concommand.Add("resetorders", function()
---     HITMAN.activeOrders = {}
--- end)
+concommand.Add("resetorders", function()
+    HITMAN.activeOrders = {}
+end)

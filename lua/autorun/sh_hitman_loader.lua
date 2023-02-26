@@ -1,5 +1,7 @@
 HITMAN = {}
 timer.Simple(0, function()
+    DarkRP.disabledDefaults.modules.hitmenu = true
+
     HITMAN.config = {
         -- Работы, которые не смогут заказывать
         cantOrder = {
@@ -7,12 +9,12 @@ timer.Simple(0, function()
         },
         -- Работы, которые смогут выполнять заказы
         hitmanJobs = {
-            [TEAM_COOK] = true,
+            [TEAM_GANG] = true,
         },
         -- Минимальная и максимальная сумма
-        price = {1000, 30000},
+        price = {1000, 300000},
         -- Может ли киллер сам делать закзаы
-        canHitmanOrder = true,
+        canHitmanOrder = false,
         -- Нужно ли менять профессию жертвы на стандартную, после убийства киллером
         needChangeTeam = false,
         -- Профессия, на которую сменится после смерти жертвы

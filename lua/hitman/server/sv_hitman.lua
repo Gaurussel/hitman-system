@@ -63,25 +63,24 @@ function GetOrder(victim)
 end
 
 hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
-    local victimID = victim:AccountID()
     local order = GetOrder(victim)
     if not order then return end
 
     if not attacker:IsPlayer() then
-        local customer = player.GetByAccountID(HITMAN.activeOrders[victim].customer)
+        -- local customer = player.GetByAccountID(HITMAN.activeOrders[victim].customer)
 
-        if IsValid(customer) then
-            DarkRP.notify(customer, 2, 4, "Наёмник выполнил ваш заказ на убийство!")
-        end
+        -- if IsValid(customer) then
+        --     DarkRP.notify(customer, 2, 4, "Наёмник выполнил ваш заказ на убийство!")
+        -- end
 
-        for k, v in pairs(player.GetAll()) do
-            if not HITMAN.config.hitmanJobs[v:Team()] then continue end
-            net.Start("hitman.RemoveOrder")
-            net.WriteEntity(victim)
-            net.Send(v)
-        end
+        -- for k, v in pairs(player.GetAll()) do
+        --     if not HITMAN.config.hitmanJobs[v:Team()] then continue end
+        --     net.Start("hitman.RemoveOrder")
+        --     net.WriteEntity(victim)
+        --     net.Send(v)
+        -- end
 
-        RemoveOrder(victim)
+        -- RemoveOrder(victim)
 
         return
     end
@@ -108,29 +107,24 @@ hook.Add("PlayerDeath", "hitman.PlayerDeath", function(victim, _, attacker)
     end
 
     RemoveOrder(victim)
+    hook.Run("HitmanOrderComplete", victim, attacker, order.price)
 end)
 
 hook.Add("PlayerChangedTeam", "hitman.PlayerChangedTeam", function(ply, _, newTeam)
     if not HITMAN.config.hitmanJobs[newTeam] then return end
 
-    for k, v in pairs(HITMAN.activeOrders) do
+    for victim, data in pairs(HITMAN.activeOrders) do
         net.Start("hitman.AddOrder")
         net.WriteEntity(victim)
-        net.WriteUInt(v.price, 24)
+        net.WriteUInt(data.price, 24)
         net.Send(ply)
     end
 end)
 
 hook.Add("PlayerDisconnected", "hitman.PlayerDisconnected", function(ply)
     if GetOrder(ply) then
-        for k, v in pairs(player.GetAll()) do
-            if not HITMAN.config.hitmanJobs[v:Team()] then continue end
-            net.Start("hitman.RemoveOrder")
-            net.WriteEntity(ply)
-            net.Send(v)
-        end
-
         RemoveOrder(ply)
+        hook.Run("HitmanOrderRemove", ply)
     end
 end)
 
@@ -148,6 +142,7 @@ net.Receive("hitman.AddOrder", function(_, ply)
     local victim = net.ReadEntity()
     local price = net.ReadUInt(24)
     AddOrder(victim, ply, price)
+    hook.Run("AddHitmanOrder", victim, ply, price)
 end)
 
 function HITMAN.GetTeamPlayers()
@@ -160,10 +155,10 @@ function HITMAN.GetTeamPlayers()
     return count
 end
 
--- concommand.Add("getordersh", function()
---     PrintTable(HITMAN.activeOrders)
--- end)
+concommand.Add("getordersh", function()
+    PrintTable(HITMAN.activeOrders)
+end)
 
--- concommand.Add("resetorders", function()
---     HITMAN.activeOrders = {}
--- end)
+concommand.Add("resetorders", function()
+    HITMAN.activeOrders = {}
+end)

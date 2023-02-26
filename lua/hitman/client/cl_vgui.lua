@@ -2,27 +2,28 @@ local PNL = FindMetaTable("Panel")
 
 local function GetTextHeight(font, text)
     surface.SetFont(font)
-    local w, h = surface.GetTextSize(text)
+    local _, h = surface.GetTextSize(text)
+
     return h
 end
 
-local function GetTextWide(font, text)
-    surface.SetFont(font)
-    local w, h = surface.GetTextSize(text)
-    return w
-end
+-- local function GetTextWide(font, text)
+--     surface.SetFont(font)
+--     local w, h = surface.GetTextSize(text)
+
+--     return w
+-- end
 
 local function Ease(t, b, c, d)
-	t = t / d
-	local ts = t * t
-	local tc = ts * t
+    t = t / d
+    local ts = t * t
+    local tc = ts * t
 
-
-	return b + c * (-2 * tc + 3 * ts)
+    return b + c * (-2 * tc + 3 * ts)
 end
 
 local function LerpColor(fract, from, to)
-	return Color(Lerp(fract, from.r, to.r), Lerp(fract, from.g, to.g), Lerp(fract, from.b, to.b), Lerp(fract, from.a or 255, to.a or 255))
+    return Color(Lerp(fract, from.r, to.r), Lerp(fract, from.g, to.g), Lerp(fract, from.b, to.b), Lerp(fract, from.a or 255, to.a or 255))
 end
 
 function PNL:LerpColor(var, to, duration, callback)
@@ -75,7 +76,7 @@ function PNL:SetMyScroll()
     end
 
     function self.sBar:OnMousePressed()
-        local x, y = self:CursorPos()
+        local _, y = self:CursorPos()
         local PageSize = self.BarSize
 
         if y > self.btnGrip.y then
@@ -303,7 +304,6 @@ function PANEL:Paint(width, height)
 end
 
 vgui.Register("ht.DscrollPanel", PANEL, "DScrollPanel")
-
 DEFINE_BASECLASS("DTextEntry")
 PANEL = {}
 
@@ -315,15 +315,14 @@ function PANEL:Paint(width, height)
     -- draw.RoundedBox(0, 0, 0, width, height, )
     surface.SetDrawColor(HITMAN.config.colors.bg)
     surface.DrawRect(0, 0, width, height)
-
     BaseClass.Paint(self, width, height)
 end
 
 vgui.Register("htTextEntry", PANEL, "DTextEntry")
-
 local localplayer = LocalPlayer()
+
 local function OpenMenu()
-    if !IsValid(localplayer) then
+    if not IsValid(localplayer) then
         localplayer = LocalPlayer()
     end
 
@@ -333,12 +332,10 @@ local function OpenMenu()
     frame:SetTitle("Заказ на убийство")
     frame:MakePopup()
     frame:InitPanel()
-
     local panel = vgui.Create("ht.DscrollPanel", frame)
     panel:SetSize(frame:GetWide() * 0.35, frame:GetTall() - frame.TopPanel:GetTall() - 5)
     panel:SetPos(0, frame.TopPanel:GetTall() + 5)
     panel:SetBackgroundColor(HITMAN.config.colors.tertiary)
-
     local infPanel = vgui.Create("ht.Panel", frame)
     infPanel:SetSize(frame:GetWide() * 0.65 - 5, frame:GetTall() - frame.TopPanel:GetTall() - 5)
     infPanel:SetPos(frame:GetWide() * 0.35 + 5, frame.TopPanel:GetTall() + 5)
@@ -352,27 +349,23 @@ local function OpenMenu()
         item:SetSize(wide, tall)
         item:Dock(TOP)
         item:DockMargin(0, 0, 0, 5)
-
         item:SetBackgroundColor(HITMAN.config.colors.secondary)
         local Avatar = vgui.Create("AvatarImage", item)
         Avatar:SetSize(aSize - 10, tall - 10)
         Avatar:SetPos(5, 5)
         Avatar:SetPlayer(v, 128)
-
         local name = item:Add("DLabel")
         name:SetText(v:Name())
         name:SetFont("htRoboto25")
         name:SetTextColor(HITMAN.config.colors.text)
         name:SizeToContents()
         name:SetPos(aSize, tall * .25)
-
         --[[local job = item:Add( "DLabel" )
         job:SetText(v:getDarkRPVar("job"))
         job:SetFont("htRoboto20")
         job:SetTextColor(HITMAN.config.colors.text)
         job:SizeToContents()
         job:SetPos(aSize, tall * .5)]]
-
         local button = item:Add("ht.Button")
         button:SetSize(item:GetWide(), item:GetTall())
         button:SetPos(0, 0)
@@ -388,21 +381,18 @@ local function OpenMenu()
             icon:SetSize(iconWide, iconWide)
             icon:SetPos(infWide * 0.2, 0)
             icon:SetModel(v:GetModel())
-
-            local name = infPanel:Add("DLabel")
-            name:SetText(v:Name())
-            name:SetFont("htRoboto30")
-            name:SetTextColor(HITMAN.config.colors.text)
-            name:SizeToContents()
-            name:SetPos((infWide - name:GetWide()) / 2, infTall * .63)
-
-            local job = infPanel:Add( "DLabel" )
+            local nameLabel = infPanel:Add("DLabel")
+            nameLabel:SetText(v:Name())
+            nameLabel:SetFont("htRoboto30")
+            nameLabel:SetTextColor(HITMAN.config.colors.text)
+            nameLabel:SizeToContents()
+            nameLabel:SetPos((infWide - nameLabel:GetWide()) / 2, infTall * .63)
+            local job = infPanel:Add("DLabel")
             job:SetText(v:getDarkRPVar("job"))
             job:SetFont("htRoboto25")
             job:SetTextColor(HITMAN.config.colors.text)
             job:SizeToContents()
             job:SetPos((infWide - job:GetWide()) / 2, infTall * .68)
-
             local TextEntry = infPanel:Add("htTextEntry")
             TextEntry:SetSize(infWide * 0.4, infTall * 0.06)
             TextEntry:SetPos((infWide - TextEntry:GetWide()) / 2, infTall * 0.75)
@@ -411,20 +401,19 @@ local function OpenMenu()
             TextEntry:SetTextColor(HITMAN.config.colors.text)
             TextEntry:SetValue(HITMAN.config.price[1])
             TextEntry:SetPaintBackground(false)
+            local orderButton = infPanel:Add("ht.Button")
+            orderButton:SetSize(infWide * 0.4, infTall * 0.06)
+            orderButton:SetPos((infWide - orderButton:GetWide()) / 2, infTall * 0.83)
+            orderButton:SetText("Заказать")
+            orderButton:SetCornerRadius(0)
+            orderButton:SetFont("htRoboto20")
+            orderButton:SetTextColor(HITMAN.config.colors.text)
+            orderButton:SetBackgroundColor(HITMAN.config.colors.btnColor)
 
-            local button = infPanel:Add("ht.Button")
-            button:SetSize(infWide * 0.4, infTall * 0.06)
-            button:SetPos((infWide - button:GetWide()) / 2, infTall * 0.83)
-            button:SetText("Заказать")
-            button:SetCornerRadius(0)
-            button:SetFont("htRoboto20")
-            button:SetTextColor(HITMAN.config.colors.text)
-            button:SetBackgroundColor(HITMAN.config.colors.btnColor)
-
-            button.DoClick = function()
+            orderButton.DoClick = function()
                 net.Start("hitman.AddOrder")
-                    net.WriteEntity(v)
-                    net.WriteUInt(TextEntry:GetValue(), 24)
+                net.WriteEntity(v)
+                net.WriteUInt(TextEntry:GetValue(), 24)
                 net.SendToServer()
             end
         end
