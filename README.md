@@ -7,4 +7,6 @@ To make a contract, you need to approach a special NPC. In it, you can select a 
 · Clean UI Design  
 · Fully customizable (max min price, colors, hitman jobs, jobs can't order)  
 · Hitman HUD  
+
+## Video:
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/eBM8xS-4onA/0.jpg)](https://www.youtube.com/watch?v=eBM8xS-4onA)
